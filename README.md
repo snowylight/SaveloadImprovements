@@ -1,7 +1,7 @@
 # SaveloadImprovements
 Need lovely : https://github.com/ethangreen-dev/lovely-injector/releases
 
-Place the entire folder in the MODS directory(...\Balatro\Mods\SaveloadImprovements)
+Place the entire folder in the MODS directory  (...\Balatro\Mods\SaveloadImprovements)
 
 - Fix the error where the game crashes after saveload when the score is too high.
 
