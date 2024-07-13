@@ -1,0 +1,104 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# fix explosive score bug
+[[patches]]
+[patches.pattern]
+target = "functions/misc_functions.lua"
+pattern = '''if not amt or type(amt) ~= 'number' then return end'''
+position = "at"
+payload = '''
+if not amt or type(amt) ~= 'number' or amt >= 1.8e308 then return end
+'''
+match_indent = false
+overwrite = false
+
+
+# change shop size1
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''G.GAME.shop.joker_max*1.02*G.CARD_W,'''
+position = "at"
+payload = '''
+0.99*math.log(G.GAME.shop.joker_max+0.5, 1.64)*1.02*G.CARD_W,
+'''
+match_indent = false
+overwrite = false
+
+
+# change shop size2
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''G.shop_jokers.T.w = G.GAME.shop.joker_max*1.01*G.CARD_W'''
+position = "at"
+payload = '''
+G.shop_jokers.T.w = 0.99*math.log(G.GAME.shop.joker_max+0.5, 1.64)*1.02*G.CARD_W
+'''
+match_indent = false
+overwrite = false
+
+
+# change shop button1
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.R,config={id = 'next_round_button', align = "cm", minw = 2.8, minh = 1.5, r=0.15,colour = G.C.RED, one_press = true, button = 'toggle_shop', hover = true,shadow = true}, nodes = {'''
+position = "at"
+payload = '''
+{n=G.UIT.R,config={id = 'next_round_button', align = "cm", minw = 1.5, minh = 1.5, r=0.15,colour = G.C.RED, one_press = true, button = 'toggle_shop', hover = true,shadow = true}, nodes = {
+'''
+match_indent = false
+overwrite = false
+
+
+# change shop button2
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.R, config={align = "cm", minw = 2.8, minh = 1.6, r=0.15,colour = G.C.GREEN, button = 'reroll_shop', func = 'can_reroll', hover = true,shadow = true}, nodes = {'''
+position = "at"
+payload = '''
+{n=G.UIT.R, config={align = "cm", minw = 1.6, minh = 1.6, r=0.15,colour = G.C.GREEN, button = 'reroll_shop', func = 'can_reroll', hover = true,shadow = true}, nodes = {
+'''
+match_indent = false
+overwrite = false
+
+
+# change skip booster button1
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''G.FUNCS.can_skip_booster = function(e)'''
+position = "before"
+payload = '''
+--[[
+'''
+match_indent = false
+overwrite = false
+
+# change skip booster button2
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''G.FUNCS.show_infotip = function(e)'''
+position = "before"
+payload = '''
+]]
+  G.FUNCS.can_skip_booster = function(e)
+    if G.pack_cards and (G.pack_cards.cards[1]) and 
+    (G.STATE == G.STATES.PLANET_PACK or G.STATE == G.STATES.STANDARD_PACK or G.STATE == G.STATES.BUFFOON_PACK or (G.hand and (G.hand.cards[1] or (G.hand.config.card_limit <= 0)))) then 
+        e.config.colour = G.C.GREY
+        e.config.button = 'skip_booster'
+    else
+      e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+      e.config.button = 'skip_booster'
+    end
+  end
+  
+'''
+match_indent = false
+overwrite = false
