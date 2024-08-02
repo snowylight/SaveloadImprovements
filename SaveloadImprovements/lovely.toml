@@ -102,3 +102,44 @@ payload = '''
 '''
 match_indent = false
 overwrite = false
+
+# change tag UI1
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''local tag_sprite_ui = _tag:generate_UI()'''
+position = "after"
+payload = '''
+--[[
+'''
+match_indent = false
+overwrite = false
+
+# change tag UI2
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''_tag.HUD_tag = G.HUD_tags[#G.HUD_tags]'''
+position = "after"
+payload = '''
+]]
+      G.HUD_tags[#G.HUD_tags+1] = UIBox{
+      definition = {n=G.UIT.ROOT, config={align = "cm",padding = -0.12, colour = G.C.CLEAR}, nodes={
+        tag_sprite_ui
+      }},
+      config = {
+        align = G.HUD_tags[1] and 'tm' or 'bri',
+        offset = G.HUD_tags[1] and {x=0,y=0} or {x=0.7,y=1.1},
+        major = G.HUD_tags[1] and G.HUD_tags[#G.HUD_tags] or G.ROOM_ATTACH}
+  }
+  discover_card(G.P_TAGS[_tag.key])
+
+  for i = 1, #G.GAME.tags do
+    G.GAME.tags[i]:apply_to_run({type = 'tag_add', tag = _tag})
+  end
+  
+  G.GAME.tags[#G.GAME.tags+1] = _tag
+  _tag.HUD_tag = G.HUD_tags[#G.HUD_tags]
+'''
+match_indent = false
+overwrite = false
